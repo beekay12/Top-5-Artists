@@ -6,18 +6,16 @@
 <title>Top 5 — Rotation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 
   :root{
-    --bg:#14120e;
-    --bg-alt:#191510;
-    --paper:#ece4d3;
-    --muted:rgba(236,228,211,0.52);
-    --faint:rgba(236,228,211,0.14);
-    --gold:#c89a3c;
-    --rust:#a4472e;
-    --teal:#33625a;
+    --bg:#0f1115;
+    --bg-alt:#161920;
+    --paper:#e2e8f0;
+    --muted:rgba(226,232,240,0.50);
+    --faint:rgba(226,232,240,0.08);
+    --gold:#38bdf8;
     --head-h:clamp(66px, 15vh, 128px);
     --pad-x:clamp(20px, 4.5vw, 58px);
     --ease:cubic-bezier(.65,0,.35,1);
@@ -38,14 +36,13 @@
     color:var(--paper);
   }
 
-  /* hide scrollbars everywhere, still scrollable where needed */
   *{scrollbar-width:none; -ms-overflow-style:none;}
   *::-webkit-scrollbar{width:0; height:0; display:none;}
 
   .grain{
     position:fixed; inset:0;
     pointer-events:none;
-    opacity:.05;
+    opacity:.04;
     mix-blend-mode:overlay;
     z-index:5;
   }
@@ -60,6 +57,7 @@
   }
 
   .row{
+    --accent: var(--gold);
     position:relative;
     flex:1 1 0;
     min-height:var(--head-h);
@@ -70,6 +68,13 @@
     background:var(--bg);
     transition:flex-grow .6s var(--ease);
   }
+  
+  .row[data-artist="yeat"]{ --accent: #ef4444; }
+  .row[data-artist="kendrick"]{ --accent: #10b981; }
+  .row[data-artist="steve"]{ --accent: #f97316; }
+  .row[data-artist="pinkpantheress"]{ --accent: #ec4899; }
+  .row[data-artist="mac"]{ --accent: #3b82f6; }
+
   .row:nth-child(even){ background:var(--bg-alt); }
   .row:last-child{ border-bottom:0; }
   .row.active{ flex-grow:7; }
@@ -85,48 +90,70 @@
     width:100%;
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    gap:clamp(14px,3vw,32px);
+    justify-content:flex-start;
+    gap:clamp(14px,2.4vw,30px);
     padding:0 var(--pad-x);
     cursor:pointer;
   }
   .row-head:focus-visible{
-    outline:2px solid var(--gold);
+    outline:2px solid var(--accent);
     outline-offset:-6px;
-  }
-
-  .row-left{
-    display:flex;
-    align-items:center;
-    gap:clamp(14px,2.4vw,30px);
-    min-width:0;
   }
 
   .rank{
     font-family:'IBM Plex Mono', monospace;
     font-size:clamp(11px,1.15vw,13px);
-    color:var(--gold);
+    color:var(--accent);
     letter-spacing:.05em;
     flex-shrink:0;
+    transition:color .4s ease;
+  }
+
+  .avatar{
+    flex-shrink:0;
+    width:clamp(46px,7.5vw,94px);
+    height:clamp(46px,7.5vw,94px);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(14px,2vw,22px);
+    color:rgba(15,17,21,.85);
+    box-shadow:inset 0 0 0 2px rgba(226,232,240,.18);
+    background-size:cover;
+    background-position:center;
+    transition:box-shadow .4s ease;
+  }
+  .row.active .avatar{
+    box-shadow:inset 0 0 0 2px var(--accent);
   }
 
   .artist-info{
     min-width:0;
     display:flex;
     flex-direction:column;
+    justify-content:center;
     gap:3px;
   }
 
   .artist-name{
     margin:0;
     font-family:'Fraunces', serif;
-    font-weight:600;
+    font-weight:500;
+    font-variation-settings: "wght" 500, "opsz" 12;
     font-size:clamp(21px,4vw,42px);
     line-height:1.04;
     letter-spacing:-.01em;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    transition:font-variation-settings .5s ease, font-weight .5s ease;
+  }
+  .row.active .artist-name{
+    font-weight:700;
+    font-variation-settings: "wght" 700, "opsz" 72;
   }
 
   .artist-genre{
@@ -144,34 +171,23 @@
     font-weight:600;
     font-size:clamp(64px,15vw,190px);
     color:var(--paper);
-    opacity:.045;
+    opacity:.035;
     line-height:1;
     z-index:1;
     user-select:none;
     pointer-events:none;
+    transition:color .4s ease, opacity .4s ease;
   }
-
-  .avatar{
-    flex-shrink:0;
-    width:clamp(46px,7.5vw,94px);
-    height:clamp(46px,7.5vw,94px);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:clamp(14px,2vw,22px);
-    color:rgba(20,18,14,.85);
-    box-shadow:inset 0 0 0 2px rgba(236,228,211,.18);
-    background-size:cover;
-    background-position:center;
+  .row.active .ghost-num{
+    color:var(--accent);
+    opacity:.08;
   }
 
   .row-body{
     flex:1 1 auto;
     min-height:0;
     overflow-y:auto;
+    overscroll-behavior:contain;
     padding:0 var(--pad-x) clamp(18px,3.5vh,34px);
     opacity:0;
     transition:opacity .35s ease .08s;
@@ -193,29 +209,43 @@
     gap:16px;
     padding:clamp(8px,1.6vh,13px) 0;
     border-bottom:1px solid var(--faint);
+    transition:background-color .2s ease, transform .2s ease;
+  }
+  .track-list li:hover{
+    transform:translateX(6px);
+  }
+  .track-list li:hover .t-title{
+    color:var(--paper);
+  }
+  .track-list li:hover .t-time{
+    color:var(--paper);
   }
   .track-list li:last-child{ border-bottom:0; }
 
   .t-num{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
-    color:var(--gold);
+    color:var(--accent);
     width:18px;
     flex-shrink:0;
+    transition:color .4s ease;
   }
   .t-title{
     flex:1;
     min-width:0;
-    font-size:clamp(14px,1.6vw,17px);
+    font-size:clamp(13px,1.2vw + 0.4rem,17px);
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    color:var(--paper);
+    transition:color .2s ease;
   }
   .t-time{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
     color:var(--muted);
     flex-shrink:0;
+    transition:color .2s ease;
   }
 
   .hint{
@@ -238,7 +268,7 @@
   }
 
   @media (prefers-reduced-motion:reduce){
-    .row, .row-body{ transition:none !important; }
+    .row, .row-body, .artist-name, .track-list li{ transition:none !important; }
   }
 </style>
 </head>
@@ -251,17 +281,15 @@
 
 <div class="chart" id="chart">
 
-  <div class="row">
+  <div class="row" data-artist="yeat" id="yeat">
     <span class="ghost-num">01</span>
     <button class="row-head" aria-expanded="false" aria-controls="body-1">
-      <span class="row-left">
-        <span class="rank">01</span>
-        <span class="artist-info">
-          <h2 class="artist-name">Yeat</h2>
-          <span class="artist-genre">Hip-Hop</span>
-        </span>
-      </span>
+      <span class="rank">01</span>
       <span class="avatar" style="background-image:url('images/yeat.jpeg')"></span>
+      <span class="artist-info">
+        <h2 class="artist-name">Yeat</h2>
+        <span class="artist-genre">Hip-Hop</span>
+      </span>
     </button>
     <div class="row-body" id="body-1">
       <ol class="track-list">
@@ -274,17 +302,15 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" data-artist="kendrick" id="kendrick">
     <span class="ghost-num">02</span>
     <button class="row-head" aria-expanded="false" aria-controls="body-2">
-      <span class="row-left">
-        <span class="rank">02</span>
-        <span class="artist-info">
-          <h2 class="artist-name">Kendrick Lamar</h2>
-          <span class="artist-genre">Hip-Hop</span>
-        </span>
-      </span>
+      <span class="rank">02</span>
       <span class="avatar" style="background-image:url('images/kendrick.jpeg')"></span>
+      <span class="artist-info">
+        <h2 class="artist-name">Kendrick Lamar</h2>
+        <span class="artist-genre">Hip-Hop</span>
+      </span>
     </button>
     <div class="row-body" id="body-2">
       <ol class="track-list">
@@ -297,17 +323,15 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" data-artist="steve" id="steve">
     <span class="ghost-num">03</span>
     <button class="row-head" aria-expanded="false" aria-controls="body-3">
-      <span class="row-left">
-        <span class="rank">03</span>
-        <span class="artist-info">
-          <h2 class="artist-name">Steve Lacy</h2>
-          <span class="artist-genre">R&amp;B</span>
-        </span>
-      </span>
+      <span class="rank">03</span>
       <span class="avatar" style="background-image:url('images/steve.jpeg')"></span>
+      <span class="artist-info">
+        <h2 class="artist-name">Steve Lacy</h2>
+        <span class="artist-genre">R&amp;B</span>
+      </span>
     </button>
     <div class="row-body" id="body-3">
       <ol class="track-list">
@@ -320,17 +344,15 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" data-artist="pinkpantheress" id="pinkpantheress">
     <span class="ghost-num">04</span>
     <button class="row-head" aria-expanded="false" aria-controls="body-4">
-      <span class="row-left">
-        <span class="rank">04</span>
-        <span class="artist-info">
-          <h2 class="artist-name">PinkPantheress</h2>
-          <span class="artist-genre">Alternative Pop</span>
-        </span>
-      </span>
+      <span class="rank">04</span>
       <span class="avatar" style="background-image:url('images/pinkpanther.jpeg')"></span>
+      <span class="artist-info">
+        <h2 class="artist-name">PinkPantheress</h2>
+        <span class="artist-genre">Alternative Pop</span>
+      </span>
     </button>
     <div class="row-body" id="body-4">
       <ol class="track-list">
@@ -343,17 +365,15 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" data-artist="mac" id="mac">
     <span class="ghost-num">05</span>
     <button class="row-head" aria-expanded="false" aria-controls="body-5">
-      <span class="row-left">
-        <span class="rank">05</span>
-        <span class="artist-info">
-          <h2 class="artist-name">Mac Miller</h2>
-          <span class="artist-genre">R&amp;B / soul</span>
-        </span>
-      </span>
+      <span class="rank">05</span>
       <span class="avatar" style="background-image:url('images/mac.jpeg')"></span>
+      <span class="artist-info">
+        <h2 class="artist-name">Mac Miller</h2>
+        <span class="artist-genre">R&amp;B / soul</span>
+      </span>
     </button>
     <div class="row-body" id="body-5">
       <ol class="track-list">
@@ -375,27 +395,63 @@
   const rows = Array.from(document.querySelectorAll('.row'));
   const hint = document.getElementById('hint');
 
+  function toggleRow(targetRow, updateHash = true) {
+    const wasActive = targetRow.classList.contains('active');
+
+    rows.forEach(r => {
+      r.classList.remove('active');
+      r.querySelector('.row-head').setAttribute('aria-expanded', 'false');
+    });
+
+    if (!wasActive) {
+      targetRow.classList.add('active');
+      targetRow.querySelector('.row-head').setAttribute('aria-expanded', 'true');
+      chart.classList.add('has-active');
+      if (updateHash) {
+        history.replaceState(null, '', '#' + targetRow.id);
+      }
+    } else {
+      chart.classList.remove('has-active');
+      if (updateHash) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+    }
+
+    hint.classList.add('gone');
+  }
+
   rows.forEach(row => {
     const head = row.querySelector('.row-head');
-    head.addEventListener('click', () => {
-      const wasActive = row.classList.contains('active');
-
-      rows.forEach(r => {
-        r.classList.remove('active');
-        r.querySelector('.row-head').setAttribute('aria-expanded', 'false');
-      });
-
-      if (!wasActive) {
-        row.classList.add('active');
-        head.setAttribute('aria-expanded', 'true');
-        chart.classList.add('has-active');
-      } else {
-        chart.classList.remove('has-active');
-      }
-
-      hint.classList.add('gone');
-    });
+    head.addEventListener('click', () => toggleRow(row));
   });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+    const activeIndex = rows.findIndex(r => r.classList.contains('active'));
+    let nextIndex = 0;
+
+    if (e.key === 'ArrowDown') {
+      nextIndex = activeIndex < rows.length - 1 ? activeIndex + 1 : 0;
+    } else if (e.key === 'ArrowUp') {
+      nextIndex = activeIndex > 0 ? activeIndex - 1 : rows.length - 1;
+    }
+
+    e.preventDefault();
+    toggleRow(rows[nextIndex]);
+    rows[nextIndex].querySelector('.row-head').focus();
+  });
+
+  function handleInitialHash() {
+    const hash = window.location.hash.substring(1);
+    if (!hash) return;
+    const matchedRow = rows.find(r => r.id === hash);
+    if (matchedRow) {
+      toggleRow(matchedRow, false);
+    }
+  }
+
+  handleInitialHash();
 </script>
 
 </body>
